@@ -36,3 +36,17 @@ pruefungsnummern = [
     {"Nummer":"07LE23PL-MEH21-P-LA","Studiengang":"MEd ErwHF","Fach":"Lineare Algebra"}
     ]
 
+wunschspalten = [4, 5, 6]
+
+
+# Kosten, falls die optimale Zuordnung nicht möglich ist:
+kosten = [0, # 0: Falls pruefer == wunsch1 bekommt und das Fach richtig ist
+          1, # 1: Falls pruefer == wunsch2 bekommt und das Fach richtig ist
+          2, # 2: Falls pruefer == wunsch3 bekommt und das Fach richtig ist
+          5, # 3: Falls pruefer not in [wunsch1, wunsch2, wunsch3] und das Fach richtig ist
+          100, # 4: Falls pruefer == wunsch1 bekommt und das Fach nicht richtig ist
+          101, # 5: Falls pruefer == wunsch2 bekommt und das Fach nicht richtig ist
+          102, # 6: Falls pruefer == wunsch3 bekommt und das Fach nicht richtig ist 
+          1000 # 7: Falls pruefer not in [wunsch1, wunsch2, wunsch3] und das Fach nicht richtig ist
+          ]
+bar_length = 100 # Länge in Pixel
