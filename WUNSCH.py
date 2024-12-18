@@ -145,19 +145,19 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
                 elif find_item(dict_his, { "Name" : item["Im Besitz von (Name)"], "Fach" : "Analysis"}) != -1:
                     st.warning(f"{item['Im Besitz von (Name)']} trägt die falsche Matrikelnummer.")
                 else:
-                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} nicht in der HisInOne-Liste gefunden.")
+                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} ({item["Im Besitz von (Name)"]}) nicht in der HisInOne-Liste gefunden.")
 
     with col2:
         st.session_state.xls_ilias_la = st.file_uploader("Lineare Algebra Prüferwünsche aus Ilias (xls)", key = "data_Ilias_la")
         if st.session_state.xls_ilias_la:
             df_ilias_la = pd.read_excel(st.session_state.xls_ilias_la)
-            df_ilias_ana.sort_values(by='Letzte Änderung', ascending=True, inplace=True)
+            df_ilias_la.sort_values(by='Letzte Änderung', ascending=True, inplace=True)
             st.write(f"{df_ilias_la.shape[0]} Datensätze geladen.")
             df_ilias_la.drop_duplicates(subset=['Matrikelnummer'], keep="last", inplace=True)
             st.write(f"{df_ilias_la.shape[0]} Datensätze nach Löschen von Duplikaten.")
             st.write(df_ilias_la)
 
-            dict_ilias_la = df_ilias_ana.to_dict(orient="records")
+            dict_ilias_la = df_ilias_la.to_dict(orient="records")
             for item in dict_ilias_la:
                 i = find_item(dict_his, { "MatrikelNr." : item["Matrikelnummer"], "Name" : item["Im Besitz von (Name)"], "Fach" : "Lineare Algebra"})
                 if i >= 0:
@@ -169,7 +169,7 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
                 elif find_item(dict_his, { "Name" : item["Im Besitz von (Name)"], "Fach" : "Lineare Algebra"}) != -1:
                     st.warning(f"{item['im Besitz von (Name)']} trägt die falsche Matrikelnummer.")
                 else:
-                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} nicht in der HisInOne-Liste gefunden.")
+                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} ({item["Im Besitz von (Name)"]}) nicht in der HisInOne-Liste gefunden.")
 
     if st.session_state.xls_his and st.session_state.xls_ilias_ana and st.session_state.xls_ilias_la:
         for item in dict_his:
