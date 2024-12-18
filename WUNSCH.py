@@ -80,9 +80,9 @@ with st.expander("Prüfungsslots"):
     for i, p in enumerate(pr):
         col = st.columns([2,2,1,1])
         col[0].write(f"{p['Vorname']} {p['Nachname']}")
-        p['Slots'] = col[1].number_input("Anzahl", min_value = 0, value = p['Slots'], key = f"{p["Kurzname"]}_Slots_size", label_visibility="collapsed")
-        p["Ana"] = col[2].toggle("Prüft Analysis", p["Ana"], key = f"{p["Kurzname"]}_Ana", label_visibility = "collapsed")
-        p["LA"] = col[3].toggle("Prüft Lineare Algebra", p["LA"], key = f"{p["Kurzname"]}_LA", label_visibility = "collapsed")
+        p['Slots'] = col[1].number_input("Anzahl", min_value = 0, value = p['Slots'], key = f"{p['Kurzname']}_Slots_size", label_visibility="collapsed")
+        p["Ana"] = col[2].toggle("Prüft Analysis", p["Ana"], key = f"{p['Kurzname']}_Ana", label_visibility = "collapsed")
+        p["LA"] = col[3].toggle("Prüft Lineare Algebra", p["LA"], key = f"{p['Kurzname']}_LA", label_visibility = "collapsed")
 
     col = st.columns([2,2,1,1])
     col[0].write("#### Summe")
