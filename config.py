@@ -10,7 +10,7 @@ pruefer = [
     {"Kurzname":"junker","Vorname":"Markus","Nachname":"Junker", "Slots" : 10, "Ana" : True, "LA": True},
     {"Kurzname":"kebekus","Vorname":"Stefan","Nachname":"Kebekus", "Slots" : 10, "Ana" : True, "LA": True},
     {"Kurzname":"kuwert","Vorname":"Ernst","Nachname":"Kuwert", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"martin","Vorname":"Amador","Nachname":"Martin Pizarro", "Slots" : 10, "Ana" : True, "LA": True},
+    {"Kurzname":"pizarro","Vorname":"Amador","Nachname":"Martin Pizarro", "Slots" : 10, "Ana" : True, "LA": True},
     {"Kurzname":"mildenberger","Vorname":"Heike","Nachname":"Mildenberger", "Slots" : 10, "Ana" : True, "LA": True},
     {"Kurzname":"pfaffelhuber","Vorname":"Peter","Nachname":"Pfaffelhuber", "Slots" : 10, "Ana" : True, "LA": True},
     {"Kurzname":"rohde","Vorname":"Angelika","Nachname":"Rohde", "Slots" : 10, "Ana" : True, "LA": True},
