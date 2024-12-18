@@ -142,7 +142,7 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
                     dict_his[i]["wunsch3"] = item["Prüfer*in Priorität 2"]
                 elif find_item(dict_his, { "MatrikelNr." : item["Matrikelnummer"], "Fach" : "Analysis"}):
                     st.warning(f"Matrikelnummer {item['Matrikelnummer']} trägt den falschen Namen.")
-                elif find_item(dict_his, { "Name" : item["Im Besitz von (Name)"], "Fach" : "Lineare Algebra"}):
+                elif find_item(dict_his, { "Name" : item["Im Besitz von (Name)"], "Fach" : "Analysis"}):
                     st.warning(f"{['Im Besitz von (Name)']} trägt die falsche Matrikelnummer.")
                 else:
                     st.warning(f"Matrikelnummer {item['Matrikelnummer']} nicht in der HisInOne-Liste gefunden.")
@@ -159,7 +159,7 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
 
             dict_ilias_la = df_ilias_ana.to_dict(orient="records")
             for item in dict_ilias_la:
-                i = find_item(dict_his, { "MatrikelNr." : item["Matrikelnummer"], "Fach" : "Lineare Algebra"})
+                i = find_item(dict_his, { "MatrikelNr." : item["Matrikelnummer"], "Name" : item["Im Besitz von (Name)"], "Fach" : "Lineare Algebra"})
                 if i >= 0:
                     dict_his[i]["wunsch1"] = item["Prüfer*in Priorität 1"]
                     dict_his[i]["wunsch2"] = item["Prüfer*in Priorität 2"]
