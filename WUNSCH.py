@@ -145,7 +145,7 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
                 elif find_item(dict_his, { "Name" : item["Im Besitz von (Name)"], "Fach" : "Analysis"}) != -1:
                     st.warning(f"{item['Im Besitz von (Name)']} trägt die falsche Matrikelnummer.")
                 else:
-                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} ({item["Im Besitz von (Name)"]}) nicht in der HisInOne-Liste gefunden.")
+                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} ({item['Im Besitz von (Name)']}) nicht in der HisInOne-Liste gefunden.")
 
     with col2:
         st.session_state.xls_ilias_la = st.file_uploader("Lineare Algebra Prüferwünsche aus Ilias (xls)", key = "data_Ilias_la")
@@ -169,7 +169,7 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
                 elif find_item(dict_his, { "Name" : item["Im Besitz von (Name)"], "Fach" : "Lineare Algebra"}) != -1:
                     st.warning(f"{item['im Besitz von (Name)']} trägt die falsche Matrikelnummer.")
                 else:
-                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} ({item["Im Besitz von (Name)"]}) nicht in der HisInOne-Liste gefunden.")
+                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} ({item['Im Besitz von (Name)']}) nicht in der HisInOne-Liste gefunden.")
 
     if st.session_state.xls_his and st.session_state.xls_ilias_ana and st.session_state.xls_ilias_la:
         for item in dict_his:
