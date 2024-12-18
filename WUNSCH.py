@@ -137,9 +137,9 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
             for item in dict_ilias_ana:
                 i = find_item(dict_his, { "MatrikelNr." : item["Matrikelnummer"], "Name" : item["Im Besitz von (Name)"], "Fach" : "Analysis"})
                 if i >= 0:
-                    dict_his[i]["wunsch1"] = item["Prüfer*in Priorität 1"]
-                    dict_his[i]["wunsch2"] = item["Prüfer*in Priorität 2"]
-                    dict_his[i]["wunsch3"] = item["Prüfer*in Priorität 2"]
+                    dict_his[i]["wunsch1"] = pruefer_kurzname[item["Prüfer*in Priorität 1"]]
+                    dict_his[i]["wunsch2"] = pruefer_kurzname[item["Prüfer*in Priorität 2"]]
+                    dict_his[i]["wunsch3"] = pruefer_kurzname[item["Prüfer*in Priorität 2"]]
                 elif find_item(dict_his, { "MatrikelNr." : item["Matrikelnummer"], "Fach" : "Analysis"}) != -1:
                     st.warning(f"Matrikelnummer {item['Matrikelnummer']} trägt den falschen Namen.")
                 elif find_item(dict_his, { "Name" : item["Im Besitz von (Name)"], "Fach" : "Analysis"}) != -1:
