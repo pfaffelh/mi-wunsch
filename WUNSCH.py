@@ -50,9 +50,9 @@ def to_excel(df):
 
 def update_slots(i, fach, n):
     if fach == "Analysis":
-        st.session_state.pruefer[i]["SlotsAna"] = st.session_state[f"{st.session_state.pruefer[i]["Kurzname"]}_Ana_size"]
+        st.session_state.pruefer[i]["SlotsAna"] = st.session_state[f"{st.session_state.pruefer[i]['Kurzname']}_Ana_size"]
     elif fach == "Lineare Algebra": 
-        st.session_state.pruefer[i]["SlotsLA"] = st.session_state[f"{st.session_state.pruefer[i]["Kurzname"]}_LA_size"]
+        st.session_state.pruefer[i]["SlotsLA"] = st.session_state[f"{st.session_state.pruefer[i]['Kurzname']}_LA_size"]
 
 # list is a list of dicts, query is a dict
 def find_item(list, query):
