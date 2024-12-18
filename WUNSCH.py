@@ -167,7 +167,7 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
                 elif find_item(dict_his, { "MatrikelNr." : item["Matrikelnummer"], "Fach" : "Lineare Algebra"}):
                     st.warning(f"Matrikelnummer {item["Matrikelnummer"]} trägt den falschen Namen.")
                 elif find_item(dict_his, { "Name" : item["im Besitz von (Name)"], "Fach" : "Lineare Algebra"}):
-                    st.warning(f"{["im Besitz von (Name)"]} trägt die falsche Matrikelnummer.")
+                    st.warning(f"{['im Besitz von (Name)']} trägt die falsche Matrikelnummer.")
                 else:
                     st.warning(f"Matrikelnummer {item['Matrikelnummer']} nicht in der HisInOne-Liste gefunden.")
 
