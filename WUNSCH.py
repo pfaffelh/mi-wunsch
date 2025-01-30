@@ -192,7 +192,7 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
             if df["Erstprüfer"][i] != "" and df["wunsch1"][i] == "":
                 df["wunsch1"][i] = df["Erstprüfer"][i]
                 df["wunsch2"][i] = df["wunsch3"][i] = ""
-                st.warning(f"{df['Nachname'][i]}, {df['Vorname'][i]} ({df['Mtknr'][i]}) hat Wiederholungsprüfung in {df['Prüfungsgebiet'][i]} und hat keine Wünsche angegeben. Es wird wunsch1 = {df["Erstprüfer"][i]} und wunsch2, wunsch3 leer gesetzt.")
+                st.warning(f"{df['Nachname'][i]}, {df['Vorname'][i]} ({df['Mtknr'][i]}) hat Wiederholungsprüfung in {df['Prüfungsgebiet'][i]} und hat keine Wünsche angegeben. Es wird wunsch1 = {df['Erstprüfer'][i]} und wunsch2, wunsch3 leer gesetzt.")
 
 if st.session_state.xls_his and st.session_state.xls_ilias:
     with st.expander("Einteilung"):
