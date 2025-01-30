@@ -205,7 +205,7 @@ if st.session_state.xls_his and st.session_state.xls_ilias:
 
         fehler = [w for w in allewuensche if w not in pruefer_kurznamen + ["", None, np.nan]]
         if len(fehler):
-            st.warning(f"Wünsche {", ".join(fehler)} wurden angegeben, sind aber nicht wählbar!")
+            st.warning(f"Wünsche {', '.join(fehler)} wurden angegeben, sind aber nicht wählbar!")
 
         if st.session_state.fixed_seed:
             random.seed(42)
