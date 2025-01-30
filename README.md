@@ -20,6 +20,10 @@ Wie werden Spezialfälle behandelt?
 * Studierende, die in 2. auftauchen, aber nicht in 1., werden zur ausgegebenen Liste ergänzt. Hier fehlt dann Name, Vorname
  
 
+Falls Prüferwünsche angegeben sind, werden diese immer genommen. 
+
+Falls schon ein Prüfer feststeht (zB wege Wiederholungsprüfung) und keine Wünsche angegeben sind, werden alle Wünsche auf diesen Prüfer gesetzt
+
 
 
 Fragen: 

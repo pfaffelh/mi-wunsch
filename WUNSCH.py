@@ -48,10 +48,10 @@ def to_excel(df):
             worksheet.column_dimensions[col_letter].width = adjusted_width
     return output.getvalue()
 
-def update_slots(i, fach, n):
-    if fach == "Analysis I und II":
+def update_slots(i, prgebiet, n):
+    if prgebiet == "Analysis I und II":
         st.session_state.pruefer[i]["SlotsAna"] = st.session_state[f"{st.session_state.pruefer[i]['Kurzname']}_Ana_size"]
-    elif fach == "Lineare Algebra I und II": 
+    elif prgebiet == "Lineare Algebra I und II": 
         st.session_state.pruefer[i]["SlotsLA"] = st.session_state[f"{st.session_state.pruefer[i]['Kurzname']}_LA_size"]
 
 # list is a list of dicts, query is a dict
@@ -99,15 +99,17 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
     with col0:
         st.session_state.xls_his = st.file_uploader("Anmeldungen aus HisInOne (xls)", key = "data_His")
         if st.session_state.xls_his:
-            df_his = pd.read_excel(st.session_state.xls_his)
+            df_his = pd.read_excel(st.session_state.xls_his).fillna("")
+            df_his.rename(columns={'Prüfer': 'Erstprüfer'}, inplace=True)
             pr_nummer_dict = { x["Nummer"] : x["Prüfungsgebiet"] for x in pruefungsnummern}
             df_his["Prüfungsgebiet"] = [ pr_nummer_dict.get(x, "") for x in df_his["Elementnr"]]
             df_his["Name"] = df_his.apply(lambda row: f"{row['Nachname']}, {row['Vorname']}", axis = 1)
             nummer_unbekannt = [x for x in df_his["Elementnr"] if x not in pr_nummer_dict.keys()]
-            st.write(df_his)
+            # st.write(df_his)
             if nummer_unbekannt != []:
                 st.warning(f"Folgende Prüfungsnummern sind unbekannt und können nicht zugeordnet werden: {', '.join(nummer_unbekannt)}")
 
+            df_his.fillna("", inplace=True)
             dict_his = df_his.to_dict(orient="records")
 
             st.write("Anmeldungen")
@@ -126,35 +128,35 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
     with col1:
         st.session_state.xls_ilias = st.file_uploader("Prüferwünsche aus Ilias (xls)", key = "data_Ilias")
         if st.session_state.xls_ilias:
-            df_ilias = pd.read_excel(st.session_state.xls_ilias)
+            df_ilias = pd.read_excel(st.session_state.xls_ilias).fillna("")
             df_ilias.sort_values(by='Letzte Änderung', ascending=True, inplace=True)
             st.write(f"{df_ilias.shape[0]} Datensätze geladen.")
             df_ilias.drop_duplicates(subset=['Matrikelnummer', 'Prüfungsgebiet'], keep="last", inplace=True)
             st.write(f"{df_ilias.shape[0]} Datensätze nach Löschen von Duplikaten.")
-            st.write(df_ilias)
+            # st.write(df_ilias)
 
             dict_ilias = df_ilias.to_dict(orient="records")
             for item in dict_ilias:
-                i = find_item(dict_his, { "MatrikelNr." : item["Matrikelnummer"], "Prüfungsgebiet" : item["Prüfungsgebiet"]})
+                i = find_item(dict_his, { "Mtknr" : item["Matrikelnummer"], "Prüfungsgebiet" : item["Prüfungsgebiet"]})
                 # Falls Prüferwünsche angegeben sind, werden diese immer genommen. 
                 if i >= 0:
                     dict_his[i]["wunsch1"] = pruefer_kurzname[item["Prüfer*in Priorität 1"]]
                     dict_his[i]["wunsch2"] = pruefer_kurzname[item["Prüfer*in Priorität 2"]]
                     dict_his[i]["wunsch3"] = pruefer_kurzname[item["Prüfer*in Priorität 3"]]
-                    dict_his[i]["Prüfer"] = ""
                     dict_his[i]["Bemerkung"] = item["Bemerkung"]
                     
-#                elif find_item(dict_his, { "MatrikelNr." : item["Matrikelnummer"], "Prüfungsgebiet" : "Analysis"}) != -1:
+#                elif find_item(dict_his, { "Mtknr" : item["Matrikelnummer"], "Prüfungsgebiet" : "Analysis"}) != -1:
 #                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} trägt den falschen Namen.")
 #                elif find_item(dict_his, { "Name" : item["Im Besitz von (Name)"], "Prüfungsgebiet" : "Analysis"}) != -1:
 #                    st.warning(f"{item['Im Besitz von (Name)']} trägt die falsche Matrikelnummer.")
                 else:
-                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} ({item['Im Besitz von (Name)']}) in Prüfungsgebiet {item['Prüfungsgebiet']} nicht in der HisInOne-Liste gefunden.")
-                    st.warning(f"Der Eintrag wird dort ergänzt-")
+                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} ({item['Im Besitz von (Name)']}; {item['Prüfungsgebiet']}) nicht in der HisInOne-Liste gefunden. Der Eintrag wird dort ergänzt.")
                     dict_his.append(
                         {
                             "Mtknr" : item['Matrikelnummer'],
-                            "Nachname" : item['Im Besitz von (Name)'],
+                            "Name" : item['Im Besitz von (Name)'],
+                            "Nachname" : item['Im Besitz von (Name)'].split(",", 1)[0],
+                            "Vorname" : item['Im Besitz von (Name)'].split(",", 1)[1] if "," in item['Im Besitz von (Name)'] else "",
                             "Prüfungsgebiet" : item["Prüfungsgebiet"],
                             "wunsch1" : pruefer_kurzname[item["Prüfer*in Priorität 1"]],
                             "wunsch2" : pruefer_kurzname[item["Prüfer*in Priorität 2"]],
@@ -162,15 +164,15 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
                             "Bemerkung" : item["Bemerkung"]
                         }
                     )
-
     if st.session_state.xls_his and st.session_state.xls_ilias:
+        dict_his = sorted(dict_his, key=lambda x: (x["Prüfungsgebiet"], x["Name"]))
         for item in dict_his:
-            if "wunsch1" not in item.keys() and "Prüfer" not in item.keys():
+            # st.write(item)
+            if "wunsch1" not in item.keys() and "Erstprüfer" != "":
                 item["wunsch1"] = item["wunsch2"] = item["wunsch3"] = item["Prüfer"] = ""
-                st.write(f"{item['MatrikelNr.']} ({item['Nachname']}, {item['Vorname']}) ({item['Prüfungsgebiet']}) ist noch kein Prüfer zugeordnet, und hat keinen Prüferwunsch angegeben")
+                st.write(f"{item['Mtknr']} ({item['Nachname']}, {item['Vorname']}; {item['Prüfungsgebiet']}) ist noch kein Prüfer zugeordnet, und hat keinen Prüferwunsch angegeben")
 
         df = pd.DataFrame.from_dict(dict_his)
-        st.write(df)
 
         anzahl_slots = sum([ p['Slots'] for p in st.session_state.pruefer])
         if df.shape[1] > anzahl_slots:
@@ -178,23 +180,32 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
         else: 
             st.success(f"Einteilung möglich, es gibt genug Prüfungsslots.")
 
+        # Aussortieren von doppelten Wünschen
         for w1, w2 in combinations(["wunsch1", "wunsch2", "wunsch3"],2):
             for i in range(df.shape[0]):
-                if df[w1][i] == df[w2][i]:
-                    st.warning(f"{df['Nachname'][i]}, {df['Vorname'][i]} ({df['MatrikelNr.'][i]}) hat Prüfer {df[w1][i]} als {w1} und {w2} angegeben. Es wird {w2} ='' gesetzt.")
+                if df[w1][i] == df[w2][i] and df[w1][i] != "":
+                    st.warning(f"{df['Nachname'][i]}, {df['Vorname'][i]} ({df['Mtknr'][i]}) hat Prüfer {df[w1][i]} als {w1} und {w2} angegeben. Es wird {w2} ='' gesetzt.")
                     df[w2][i] = ""
+
+        # Falls Prüfer schon feststeht und keine Wünsche angegeben sind, werden alle Wünsche auf diesen Prüfer gesetzt
+        for i in range(df.shape[0]):
+            if df["Erstprüfer"][i] != "" and df["wunsch1"][i] == "":
+                df["wunsch1"][i] = df["Erstprüfer"][i]
+                df["wunsch2"][i] = df["wunsch3"][i] = ""
+                st.warning(f"{df['Nachname'][i]}, {df['Vorname'][i]} ({df['Mtknr'][i]}) hat Wiederholungsprüfung in {df['Prüfungsgebiet'][i]} und hat keine Wünsche angegeben. Es wird wunsch1 = {df["Erstprüfer"][i]} und wunsch2, wunsch3 leer gesetzt.")
 
 if st.session_state.xls_his and st.session_state.xls_ilias:
     with st.expander("Einteilung"):
         st.write("Nun wird die Einteilung vorgenommen.")
         # Diese Liste von Listen gibt die Wünsche der Studierenden 
+        wunschspalten = [df.columns.get_loc(name) for name in ["wunsch1", "wunsch2", "wunsch3"]]
         wuensche = [list(df[df.columns[i]]) for i in wunschspalten]
         allewuensche = [item for sublist in wuensche for item in sublist] 
         pruefer_kurznamen = [p["Kurzname"] for p in st.session_state.pruefer]
 
-        fehler = [w for w in allewuensche if w not in pruefer_kurznamen + [""]]
+        fehler = [w for w in allewuensche if w not in pruefer_kurznamen + ["", None, np.nan]]
         if len(fehler):
-            st.warning(f"Wünsche {fehler} wurden angegeben, sind aber nicht wählbar!")
+            st.warning(f"Wünsche {", ".join(fehler)} wurden angegeben, sind aber nicht wählbar!")
 
         if st.session_state.fixed_seed:
             random.seed(42)
@@ -207,10 +218,10 @@ if st.session_state.xls_his and st.session_state.xls_ilias:
                     spalten.extend([(p["Kurzname"], p["Ana"], p["LA"])])
 
         kostenMatrix = np.zeros((df.shape[0], len(spalten)))
-        fach = df["Prüfungsgebiet"]
+        prgebiet = df["Prüfungsgebiet"]
         for i in range(kostenMatrix.shape[0]):
             for j in range(kostenMatrix.shape[1]):
-                if (fach[i] == "Analysis" and not spalten[j][1]) or (fach[i] == "Lineare Algebra" and not spalten[j][2]):
+                if (prgebiet[i] == "Analysis I und II" and not spalten[j][1]) or (prgebiet[i] == "Lineare Algebra I und II" and not spalten[j][2]):
                     kostenMatrix[i,j] = float(kosten[4])
                 else:
                     kostenMatrix[i,j] = float(kosten[3])
@@ -220,14 +231,17 @@ if st.session_state.xls_his and st.session_state.xls_ilias:
 
         row_ind, col_ind = linear_sum_assignment(kostenMatrix, maximize=False)
         df["Name"] = [spalten[j][0] for j in col_ind]
-        df.rename(columns={'Name': 'Prüfer'}, inplace=True)
-        #df = df[["MatrikelNr.", "Nachname", "Vorname", "Prüfungsgebiet", "Prüfer", "wunsch1", "wunsch2", "wunsch3"]]
+        df["Prüfer"] = df["Name"]
+        del df["Name"]
+        #df.rename(columns={'Name': 'Prüfer'}, inplace=True)
+        #df = df[["Mtknr", "Nachname", "Vorname", "Prüfungsgebiet", "Prüfer", "wunsch1", "wunsch2", "wunsch3"]]
 
         st.write("Hier das Ergebnis der Einteilung:")
-
-        for stu1, stu2 in combinations(df.iterrows(), 2):
-            if stu1[1]["MatrikelNr."] == stu2[1]["MatrikelNr."]:
-                st.write(f"{stu1[1]['Nachname']}, {stu1[1]['Vorname']} ({stu1[1]['MatrikelNr.']}) hat sich zu Prüfungen in {stu1[1]['Prüfungsgebiet']} und {stu2[1]['Prüfungsgebiet']} angemeldet. Prüfer sind {stu1[1]['Prüfer']} und {stu2[1]['Prüfer']}.")    
+        for i in range(len(df)):
+            for j in range(i + 1, len(df)):
+                if df.iloc[i]["Mtknr"] == df.iloc[j]["Mtknr"]:
+                    st.write(f"{df.iloc[i]['Nachname']}, {df.iloc[i]['Vorname']} ({df.iloc[i]['Mtknr']}) hat sich zu Prüfungen in {df.iloc[i]['Prüfungsgebiet']} und {df.iloc[j]['Prüfungsgebiet']} angemeldet. Prüfer sind {df.iloc[i]['Prüfer']} und {df.iloc[j]['Prüfer']}.")    
+        st.write(df)
         
         output = BytesIO()
 
@@ -239,34 +253,43 @@ if st.session_state.xls_his and st.session_state.xls_ilias:
             file_name="anmeldungen.xls",
             mime="application/vnd.ms-excel"
         )
-        st.write(df)
 
-        w1 = {"Prüfungsgebiet": "Analysis", 
-               "Wunsch 1" : df[(df["Prüfungsgebiet"] == "Analysis") & (df["Prüfer"] == df["wunsch1"])].shape[0], 
-               "Wunsch 2" : df[(df["Prüfungsgebiet"] == "Analysis") & (df["Prüfer"] == df["wunsch2"])].shape[0], 
-               "Wunsch 3" : df[(df["Prüfungsgebiet"] == "Analysis") & (df["Prüfer"] == df["wunsch3"])].shape[0], 
-               "Summe" : df[df["Prüfungsgebiet"] == "Analysis"].shape[0]
+        w1 = {"Prüfungsgebiet": "Analysis I und II", 
+               "Wunsch 1" : df[(df["Prüfungsgebiet"] == "Analysis I und II") & (df["Prüfer"] == df["wunsch1"])].shape[0], 
+               "Wunsch 2" : df[(df["Prüfungsgebiet"] == "Analysis I und II") & (df["Prüfer"] == df["wunsch2"])].shape[0], 
+               "Wunsch 3" : df[(df["Prüfungsgebiet"] == "Analysis I und II") & (df["Prüfer"] == df["wunsch3"])].shape[0], 
                }
-        w2 = {"Prüfungsgebiet": "Lineare Algebra", 
-               "Wunsch 1" : df[(df["Prüfungsgebiet"] == "Lineare Algebra") & (df["Prüfer"] == df["wunsch1"])].shape[0], 
-               "Wunsch 2" : df[(df["Prüfungsgebiet"] == "Lineare Algebra") & (df["Prüfer"] == df["wunsch2"])].shape[0], 
-               "Wunsch 3" : df[(df["Prüfungsgebiet"] == "Lineare Algebra") & (df["Prüfer"] == df["wunsch3"])].shape[0], 
-               "Summe" : df[df["Prüfungsgebiet"] == "Lineare Algebra"].shape[0]
+        w1["kein Wunsch erfüllt"] = df[(df["Prüfungsgebiet"] == "Analysis I und II") & (df["wunsch1"] != "")].shape[0] - w1["Wunsch 1"] - w1["Wunsch 2"] - w1["Wunsch 3"]
+        w1["kein Wunsch angegeben"] = df[(df["Prüfungsgebiet"] == "Analysis I und II") & (df["wunsch1"] == "")].shape[0]
+        w1["Summe"] = df[df["Prüfungsgebiet"] == "Analysis I und II"].shape[0]     
+        
+        w2 = {"Prüfungsgebiet": "Lineare Algebra I und II", 
+               "Wunsch 1" : df[(df["Prüfungsgebiet"] == "Lineare Algebra I und II") & (df["Prüfer"] == df["wunsch1"])].shape[0], 
+               "Wunsch 2" : df[(df["Prüfungsgebiet"] == "Lineare Algebra I und II") & (df["Prüfer"] == df["wunsch2"])].shape[0], 
+               "Wunsch 3" : df[(df["Prüfungsgebiet"] == "Lineare Algebra I und II") & (df["Prüfer"] == df["wunsch3"])].shape[0], 
                }
+        w2["kein Wunsch erfüllt"] = df[(df["Prüfungsgebiet"] == "Lineare Algebra I und II") & (df["wunsch1"] != "")].shape[0] - w2["Wunsch 1"] - w2["Wunsch 2"] - w2["Wunsch 3"]
+        w2["kein Wunsch angegeben"] = df[(df["Prüfungsgebiet"] == "Lineare Algebra I und II") & (df["wunsch1"] == "")].shape[0]
+        w2["Summe"] = df[df["Prüfungsgebiet"] == "Lineare Algebra I und II"].shape[0]
+
+
         w3 = {"Prüfungsgebiet": "Summe", 
                "Wunsch 1" : df[df["Prüfer"] == df["wunsch1"]].shape[0], 
                "Wunsch 2" : df[df["Prüfer"] == df["wunsch2"]].shape[0], 
                "Wunsch 3" : df[df["Prüfer"] == df["wunsch3"]].shape[0], 
-               "Summe" : df.shape[0]
                }
+        w3["kein Wunsch erfüllt"] = df[df["wunsch1"] != ""].shape[0] - w3["Wunsch 1"] - w3["Wunsch 2"] - w3["Wunsch 3"]
+        w3["kein Wunsch angegeben"] = df[df["wunsch1"] == ""].shape[0]
+        w3["Summe"] = df.shape[0]     
+
         st.write(pd.DataFrame([w1, w2, w3]))
 
         bel = []
         for p in st.session_state.pruefer:
             b = {"Name" : f"{p['Nachname']}, {p['Vorname']}",
                  "Slots" : p["Slots"],
-                 "Ana Prüfungen" : df[(df["Prüfungsgebiet"] == "Analysis") & (df["Prüfer"] == p["Kurzname"])].shape[0],
-                 "LA Prüfungen" : df[(df["Prüfungsgebiet"] == "Lineare Algebra") & (df["Prüfer"] == p["Kurzname"])].shape[0],                 
+                 "Ana Prüfungen" : df[(df["Prüfungsgebiet"] == "Analysis I und II") & (df["Prüfer"] == p["Kurzname"])].shape[0],
+                 "LA Prüfungen" : df[(df["Prüfungsgebiet"] == "Lineare Algebra I und II") & (df["Prüfer"] == p["Kurzname"])].shape[0],                 
             }
             bel.append(b)
 
