@@ -64,6 +64,7 @@ def find_item(list, query):
     return res
 
 with st.expander("Grundeinstellungen"):
+    st.write("Wenn die Default-Einstellungen genändert werden sollen, muss die Datei `config.py` angepasst werden. Dies gilt auch, wenn neue Prüfer hinzukommen oder alte wegfallen.")
     st.session_state.kosten[1] = st.number_input("Kosten, wenn Prüfer == Wunsch2 und das Prüfungsgebiet richtig ist", min_value = 0, value = st.session_state.kosten[1], key = f"kosten1")
     st.session_state.kosten[2] = st.number_input("Kosten, wenn Prüfer == Wunsch3 und das Prüfungsgebiet richtig ist", min_value = 0, value = st.session_state.kosten[2], key = f"kosten2")
     st.session_state.kosten[3] = st.number_input("Kosten, wenn kein Prüferwunsch erfüllt wird aber das Prüfungsgebiet des Prüfungsslots richtig ist", min_value = 0, value = st.session_state.kosten[3], key = f"kosten3")
@@ -71,6 +72,7 @@ with st.expander("Grundeinstellungen"):
     st.session_state.fixed_seed = st.toggle("Es werden immer dieselben Zufallszahlen genommen.", st.session_state.fixed_seed)
 
 with st.expander("Prüfungsslots"):
+    st.write("Wenn die Default-Einstellungen genändert werden sollen, muss die Datei `config.py` angepasst werden. Dies gilt auch, wenn neue Prüfer hinzukommen oder alte wegfallen.")
     col = st.columns([2,2,1,1])
     col[1].write("#### Anzahl")
     col[2].write("#### Prüft Analysis")
@@ -98,6 +100,9 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
     col0, col1 = st.columns([2,2])
     with col0:
         st.session_state.xls_his = st.file_uploader("Anmeldungen aus HisInOne (xls)", key = "data_His")
+        st.write("Die Datei wird aus HisInOne generiert werden. Sie muss Spalten 'Mtknr', 'Nachname', 'Vorname', 'Elementnr', 'Prüfer' enthalten. Die Spalte 'Prüfer' enthält dabei -- falls zutreffend -- den Namen des Prüfers der Erstprüfung. Weitere Spalten dürfen enthalten sein und werden nicht verändert.")
+        st.write("Zulässige Einträge in der Spalte 'Prüfer' sind:")
+        st.write(", ".join(x['Kurzname'] for x in pruefer))
         if st.session_state.xls_his:
             df_his = pd.read_excel(st.session_state.xls_his).fillna("")
             df_his.rename(columns={'Prüfer': 'Erstprüfer'}, inplace=True)
@@ -127,13 +132,16 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
 
     with col1:
         st.session_state.xls_ilias = st.file_uploader("Prüferwünsche aus Ilias (xls)", key = "data_Ilias")
+        st.write("Die Datei wird aus dem Ilias-Kurs generiert. Genauer müssen die dortigen Dateien aus den beiden Prüfungsgebieten 'Analysis I und II' sowie 'Lineare Algebra I unfd II' in eine Datei zusammengeführt werden. Sie muss Spalten 'Matrikelnummer', 'Prüfungsgebiet', 'Prüfer*in Priorität 1', 'Prüfer*in Priorität 2', 'Prüfer*in Priorität 3', 'Bemerkung', 'Letzte Änderung', 'Im Besitz von (Name)' enthalten. Weitere Spalten dürfen enthalten sein und werden nicht verändert.")
+        st.write("Zulässige Einträge in Spalte 'Prüfungsgebiet' sind: 'Analysis I und II' und 'Lineare Algera I und II'.")
         if st.session_state.xls_ilias:
-            df_ilias = pd.read_excel(st.session_state.xls_ilias).fillna("")
+            df_ilias = pd.read_excel(st.session_state.xls_ilias)
+            df_ilias.fillna("", inplace=True)
             df_ilias.sort_values(by='Letzte Änderung', ascending=True, inplace=True)
             st.write(f"{df_ilias.shape[0]} Datensätze geladen.")
             df_ilias.drop_duplicates(subset=['Matrikelnummer', 'Prüfungsgebiet'], keep="last", inplace=True)
             st.write(f"{df_ilias.shape[0]} Datensätze nach Löschen von Duplikaten.")
-            # st.write(df_ilias)
+            st.write(df_ilias)
 
             dict_ilias = df_ilias.to_dict(orient="records")
             for item in dict_ilias:
