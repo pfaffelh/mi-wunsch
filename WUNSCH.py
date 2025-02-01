@@ -199,7 +199,8 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
         for i in range(df.shape[0]):
             if df["Erstprüfer"][i] != "" and df["wunsch1"][i] == "":
                 df["wunsch1"][i] = df["Erstprüfer"][i]
-                df["wunsch2"][i] = df["wunsch3"][i] = ""
+                df["wunsch2"][i] = ""
+                df["wunsch3"][i] = ""
                 st.warning(f"{df['Nachname'][i]}, {df['Vorname'][i]} ({df['Mtknr'][i]}) hat Wiederholungsprüfung in {df['Prüfungsgebiet'][i]} und hat keine Wünsche angegeben. Es wird wunsch1 = {df['Erstprüfer'][i]} und wunsch2, wunsch3 leer gesetzt.")
 
 if st.session_state.xls_his and st.session_state.xls_ilias:
@@ -245,10 +246,11 @@ if st.session_state.xls_his and st.session_state.xls_ilias:
         #df = df[["Mtknr", "Nachname", "Vorname", "Prüfungsgebiet", "Prüfer", "wunsch1", "wunsch2", "wunsch3"]]
 
         st.write("Hier das Ergebnis der Einteilung:")
+        st.write("### Studierende mit zwei Prüfungen:")
         for i in range(len(df)):
             for j in range(i + 1, len(df)):
                 if df.iloc[i]["Mtknr"] == df.iloc[j]["Mtknr"]:
-                    st.write(f"{df.iloc[i]['Nachname']}, {df.iloc[i]['Vorname']} ({df.iloc[i]['Mtknr']}) hat sich zu Prüfungen in {df.iloc[i]['Prüfungsgebiet']} und {df.iloc[j]['Prüfungsgebiet']} angemeldet. Prüfer sind {df.iloc[i]['Prüfer']} und {df.iloc[j]['Prüfer']}.")    
+                    st.write(f"{df.iloc[i]['Nachname']}, {df.iloc[i]['Vorname']} ({df.iloc[i]['Mtknr']}) hat sich zu Prüfungen in {df.iloc[i]['Prüfungsgebiet']} und {df.iloc[j]['Prüfungsgebiet']} angemeldet. Prüfer sind **{df.iloc[i]['Prüfer']}** und **{df.iloc[j]['Prüfer']}**.")    
         st.write(df)
         
         output = BytesIO()

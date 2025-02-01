@@ -1,23 +1,25 @@
 import pandas as pd
 
 pruefer = [
-    {"Kurzname":"Bartels","Vorname":"Sören","Nachname":"Bartels", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Criens","Vorname":"David","Nachname":"Criens", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Dondl","Vorname":"Patrick","Nachname":"Dondl", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Goette","Vorname":"Sebastian","Nachname":"Goette", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Grosse","Vorname":"Nadine","Nachname":"Große", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Huber-Klawitter","Vorname":"Annette","Nachname":"Huber-Klawitter", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Junker","Vorname":"Markus","Nachname":"Junker", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Kebekus","Vorname":"Stefan","Nachname":"Kebekus", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Kuwert","Vorname":"Ernst","Nachname":"Kuwert", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Martin-Pizarro","Vorname":"Amador","Nachname":"Martin Pizarro", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Mildenberger","Vorname":"Heike","Nachname":"Mildenberger", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Pfaffelhuber","Vorname":"Peter","Nachname":"Pfaffelhuber", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Rohde","Vorname":"Angelika","Nachname":"Rohde", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Ruzicka","Vorname":"Michael","Nachname":"Ruzicka", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Schmidt","Vorname":"Thorsten","Nachname":"Schmidt", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Soergel","Vorname":"Wolfgang","Nachname":"Soergel", "Slots" : 10, "Ana" : True, "LA": True},
-    {"Kurzname":"Wang","Vorname":"Guofang","Nachname":"Wang", "Slots" : 10, "Ana" : True, "LA": True}
+    {"Kurzname":"Bartels","Vorname":"Sören","Nachname":"Bartels", "Slots" : 5, "Ana" : True, "LA": False},
+    {"Kurzname":"Criens","Vorname":"David","Nachname":"Criens", "Slots" : 5, "Ana" : True, "LA": False},
+    {"Kurzname":"Dondl","Vorname":"Patrick","Nachname":"Dondl", "Slots" : 5, "Ana" : True, "LA": True},
+    {"Kurzname":"Goette","Vorname":"Sebastian","Nachname":"Goette", "Slots" : 5, "Ana" : True, "LA": True},
+    {"Kurzname":"Grosse","Vorname":"Nadine","Nachname":"Große", "Slots" : 5, "Ana" : True, "LA": True},
+    {"Kurzname":"Huber-Klawitter","Vorname":"Annette","Nachname":"Huber-Klawitter", "Slots" : 5, "Ana" : True, "LA": True},
+    {"Kurzname":"Junker","Vorname":"Markus","Nachname":"Junker", "Slots" : 5, "Ana" : True, "LA": True},
+    {"Kurzname":"Kebekus","Vorname":"Stefan","Nachname":"Kebekus", "Slots" : 5, "Ana" : True, "LA": True},
+    {"Kurzname":"Kuwert","Vorname":"Ernst","Nachname":"Kuwert", "Slots" : 5, "Ana" : True, "LA": True},
+    {"Kurzname":"Martin-Pizarro","Vorname":"Amador","Nachname":"Martin Pizarro", "Slots" : 5, "Ana" : False, "LA": True},
+    {"Kurzname":"Mildenberger", "Vorname":"Heike","Nachname":"Mildenberger", "Slots" : 5, "Ana" : False, "LA": True},
+    {"Kurzname":"Oswal", "Vorname": "Abhishek","Nachname":"Oswal", "Slots" : 0, "Ana" : True, "LA": True},
+    {"Kurzname":"Pfaffelhuber","Vorname":"Peter","Nachname":"Pfaffelhuber", "Slots" : 5, "Ana" : True, "LA": False},
+    {"Kurzname":"Rohde","Vorname":"Angelika","Nachname":"Rohde", "Slots" : 5, "Ana" : True, "LA": True},
+    {"Kurzname":"Ruzicka","Vorname":"Michael","Nachname":"Ruzicka", "Slots" : 5, "Ana" : True, "LA": False},
+    {"Kurzname":"Salimova","Vorname":"Diyora","Nachname":"Salimova", "Slots" : 0, "Ana" : False, "LA": True},
+    {"Kurzname":"Schmidt","Vorname":"Thorsten","Nachname":"Schmidt", "Slots" : 5, "Ana" : True, "LA": True},
+    {"Kurzname":"Soergel","Vorname":"Wolfgang","Nachname":"Soergel", "Slots" : 5, "Ana" : True, "LA": True},
+    {"Kurzname":"Wang","Vorname":"Guofang","Nachname":"Wang", "Slots" : 5, "Ana" : True, "LA": False}
     ]
 
 # Sortiere Prüfer
@@ -47,4 +49,4 @@ kosten = [0, # 0: Falls pruefer == wunsch1 bekommt und das Prüfungsgebiet richt
           5, # 3: Falls pruefer not in [wunsch1, wunsch2, wunsch3] und das Prüfungsgebiet richtig ist
           1000 # 4: Falls das Prüfungsgebiet nicht richtig ist
           ]
-bar_length = 100 # Länge in Pixel
+
