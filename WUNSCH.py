@@ -10,10 +10,9 @@ from config import *
 
 st.set_page_config(page_title="Prüfungseinteilung", layout="wide")
 
-# Es liegt eine xls-Datei vor mit Feldern
-# Matr, Name, Vorname, Prüfungsgebiet, wunsch1, wunsch2, wunsch3
-# Prüfungsgebiet ist "Analysis I und II" oder "Lineare Algebra I und II"
-# Ziel ist es, eine Spalten zu Ergänzungen: Zuteilung des Prüfers
+# Es liegen zwei xls-Dateien vor. Eine mit Anmeldungen aus HisInOne und eine den abgegebenen Wünschen
+# aus dem Ilias-Kurs. Ziel ist es, die erste Tabelle um die Prüferwünsche, und den eingeteilten Prüfer
+# zu ergänzen. Weitere Beschreibung siehe unten.
 
 # In config.py sind die Prüfer und ihre initialen Prüfungsslots definiert. 
 
@@ -139,13 +138,13 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
             df_ilias.fillna("", inplace=True)
             df_ilias.sort_values(by='Letzte Änderung', ascending=True, inplace=True)
             st.write(f"{df_ilias.shape[0]} Datensätze geladen.")
-            df_ilias.drop_duplicates(subset=['Matrikelnummer', 'Prüfungsgebiet'], keep="last", inplace=True)
+            df_ilias.drop_duplicates(subset=['Matrikelnummer', 'Im Besitz von (Name)', 'Prüfungsgebiet'], keep="last", inplace=True)
             st.write(f"{df_ilias.shape[0]} Datensätze nach Löschen von Duplikaten.")
             st.write(df_ilias)
 
             dict_ilias = df_ilias.to_dict(orient="records")
             for item in dict_ilias:
-                i = find_item(dict_his, { "Mtknr" : item["Matrikelnummer"], "Prüfungsgebiet" : item["Prüfungsgebiet"]})
+                i = find_item(dict_his, { "Mtknr" : item["Matrikelnummer"], "Name" : item["Im Besitz von (Name)"], "Prüfungsgebiet" : item["Prüfungsgebiet"]})
                 # Falls Prüferwünsche angegeben sind, werden diese immer genommen. 
                 if i >= 0:
                     dict_his[i]["wunsch1"] = pruefer_kurzname[item["Prüfer*in Priorität 1"]]
@@ -153,10 +152,10 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
                     dict_his[i]["wunsch3"] = pruefer_kurzname[item["Prüfer*in Priorität 3"]]
                     dict_his[i]["Bemerkung"] = item["Bemerkung"]
                     
-#                elif find_item(dict_his, { "Mtknr" : item["Matrikelnummer"], "Prüfungsgebiet" : "Analysis"}) != -1:
-#                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} trägt den falschen Namen.")
-#                elif find_item(dict_his, { "Name" : item["Im Besitz von (Name)"], "Prüfungsgebiet" : "Analysis"}) != -1:
-#                    st.warning(f"{item['Im Besitz von (Name)']} trägt die falsche Matrikelnummer.")
+                elif find_item(dict_his, { "Mtknr" : item["Matrikelnummer"], "Prüfungsgebiet" : item["Prüfungsgebiet"]}) != -1:
+                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} trägt den falschen Namen.")
+                elif find_item(dict_his, { "Name" : item["Im Besitz von (Name)"], "Prüfungsgebiet" : item["Prüfungsgebiet"]}) != -1:
+                    st.warning(f"{item['Im Besitz von (Name)']} trägt die falsche Matrikelnummer.")
                 else:
                     st.warning(f"Matrikelnummer {item['Matrikelnummer']} ({item['Im Besitz von (Name)']}; {item['Prüfungsgebiet']}) nicht in der HisInOne-Liste gefunden. Der Eintrag wird dort ergänzt.")
                     dict_his.append(
