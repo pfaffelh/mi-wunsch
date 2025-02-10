@@ -133,7 +133,7 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
         st.session_state.xls_ilias = st.file_uploader("Prüferwünsche aus Ilias (xls)", key = "data_Ilias")
         st.write("Die Datei wird aus dem Ilias-Kurs generiert. Genauer müssen die dortigen Dateien aus den beiden Prüfungsgebieten 'Analysis I und II' sowie 'Lineare Algebra I unfd II' in eine Datei zusammengeführt werden. Sie muss Spalten 'Matrikelnummer', 'Prüfungsgebiet', 'Prüfer*in Priorität 1', 'Prüfer*in Priorität 2', 'Prüfer*in Priorität 3', 'Bemerkung', 'Letzte Änderung', 'Im Besitz von (Name)' enthalten. Weitere Spalten dürfen enthalten sein und werden nicht verändert.")
         st.write("Zulässige Einträge in Spalte 'Prüfungsgebiet' sind: 'Analysis I und II' und 'Lineare Algera I und II'.")
-        if st.session_state.xls_ilias:
+        if st.session_state.xls_ilias and st.session_state.xls_his:
             df_ilias = pd.read_excel(st.session_state.xls_ilias)
             df_ilias.fillna("", inplace=True)
             df_ilias.sort_values(by='Letzte Änderung', ascending=True, inplace=True)
@@ -250,7 +250,7 @@ if st.session_state.xls_his and st.session_state.xls_ilias:
             for j in range(i + 1, len(df)):
                 if df.iloc[i]["Mtknr"] == df.iloc[j]["Mtknr"]:
                     st.write(f"{df.iloc[i]['Nachname']}, {df.iloc[i]['Vorname']} ({df.iloc[i]['Mtknr']}) hat sich zu Prüfungen in {df.iloc[i]['Prüfungsgebiet']} und {df.iloc[j]['Prüfungsgebiet']} angemeldet. Prüfer sind **{df.iloc[i]['Prüfer']}** und **{df.iloc[j]['Prüfer']}**.")    
-        st.write("### Ergänzung der HisInOne-Liste:")
+        st.write("### Ergänzung der HisInOne-Liste  :")
         st.write(df)
         
         output = BytesIO()
