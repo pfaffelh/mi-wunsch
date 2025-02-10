@@ -164,9 +164,9 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
                         st.warning(f"Matrikelnummer {item['Matrikelnummer']} ({item['Im Besitz von (Name)']}; {item['Prüfungsgebiet']}) hat in ilias Wiederholungsprüfung=nein angegeben, aber in HisInOne ist ein Erstprüfer eingetragen.")
 
                 elif j >= 0:
-                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} trägt den falschen Namen. HisInOne: {dict_his[j]["Name"]}, Ilias: {item["Im Besitz von (Name)"]}.")
+                    st.warning(f"Matrikelnummer {item['Matrikelnummer']} trägt den falschen Namen. HisInOne: {dict_his[j]['Name']}, Ilias: {item['Im Besitz von (Name)']}.")
                 elif k >= 0:
-                    st.warning(f"{item['Im Besitz von (Name)']} trägt die falsche Matrikelnummer. HisInOne: {dict_his[k]["Mrknr"]}, Ilias: {item["Matrikelnummer"]}.")
+                    st.warning(f"{item['Im Besitz von (Name)']} trägt die falsche Matrikelnummer. HisInOne: {dict_his[k]['Mrknr']}, Ilias: {item['Matrikelnummer']}.")
                 else:
                     st.warning(f"Matrikelnummer {item['Matrikelnummer']} ({item['Im Besitz von (Name)']}; {item['Prüfungsgebiet']}) nicht in der HisInOne-Liste gefunden. Der Eintrag wird dort ergänzt.")
                     dict_his.append(
