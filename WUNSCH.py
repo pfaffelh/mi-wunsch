@@ -250,6 +250,7 @@ if st.session_state.xls_his and st.session_state.xls_ilias:
             for j in range(i + 1, len(df)):
                 if df.iloc[i]["Mtknr"] == df.iloc[j]["Mtknr"]:
                     st.write(f"{df.iloc[i]['Nachname']}, {df.iloc[i]['Vorname']} ({df.iloc[i]['Mtknr']}) hat sich zu Prüfungen in {df.iloc[i]['Prüfungsgebiet']} und {df.iloc[j]['Prüfungsgebiet']} angemeldet. Prüfer sind **{df.iloc[i]['Prüfer']}** und **{df.iloc[j]['Prüfer']}**.")    
+        st.write("### Ergänzung der HisInOne-Liste:")
         st.write(df)
         
         output = BytesIO()
