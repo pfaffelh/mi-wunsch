@@ -148,15 +148,21 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
 
             dict_ilias = df_ilias.to_dict(orient="records")
             for item in dict_ilias:
+                ignore = False
                 i = find_item(dict_his, { "Mtknr" : item["Matrikelnummer"], "Name" : item["Im Besitz von (Name)"], "Prüfungsgebiet" : item["Prüfungsgebiet"]})
                 # Falls Prüferwünsche angegeben sind, werden diese immer genommen. 
                 j = find_item(dict_his, { "Mtknr" : item["Matrikelnummer"], "Prüfungsgebiet" : item["Prüfungsgebiet"]})
                 k = find_item(dict_his, { "Name" : item["Im Besitz von (Name)"], "Prüfungsgebiet" : item["Prüfungsgebiet"]})
                 if i >= 0:
-                    dict_his[i]["wunsch1"] = pruefer_kurzname[item["Prüfer*in Priorität 1"]]
-                    dict_his[i]["wunsch2"] = pruefer_kurzname[item["Prüfer*in Priorität 2"]]
-                    dict_his[i]["wunsch3"] = pruefer_kurzname[item["Prüfer*in Priorität 3"]]
-                    dict_his[i]["Bemerkung"] = item["Bemerkung"]
+                    pr1, pr2, pr3 = item["Prüfer*in Priorität 1"], item["Prüfer*in Priorität 2"], item["Prüfer*in Priorität 3"]
+                    if pr1 == "":
+                        st.warning(f"Matrikelnummer {item['Matrikelnummer']} ({item['Im Besitz von (Name)']}; {item['Prüfungsgebiet']}) hat in ilias keine Wünsche abgegeben. Sein Ilias-Eintrag wird deshalb ignoriert.")
+                        ignore = True
+                    else:
+                        dict_his[i]["wunsch1"] = pruefer_kurzname[pr1] if pr1 != "" else ""
+                        dict_his[i]["wunsch2"] = pruefer_kurzname[pr2] if pr2 != "" else ""
+                        dict_his[i]["wunsch3"] = pruefer_kurzname[pr3] if pr3 != "" else ""
+                        dict_his[i]["Bemerkung"] = item["Bemerkung"]
 
                     if item["Wiederholungsprüfung?"] == 1 and dict_his[i]["Erstprüfer"] == "":
                         st.warning(f"Matrikelnummer {item['Matrikelnummer']} ({item['Im Besitz von (Name)']}; {item['Prüfungsgebiet']}) hat in ilias Wiederholungsprüfung=ja angegeben, aber in HisInOne ist kein Erstprüfer eingetragen.")
@@ -169,19 +175,20 @@ with st.expander("Upload Daten von Studierenden", expanded = False if st.session
                     st.warning(f"{item['Im Besitz von (Name)']} trägt die falsche Matrikelnummer. HisInOne: {dict_his[k]['Mrknr']}, Ilias: {item['Matrikelnummer']}.")
                 else:
                     st.warning(f"Matrikelnummer {item['Matrikelnummer']} ({item['Im Besitz von (Name)']}; {item['Prüfungsgebiet']}) nicht in der HisInOne-Liste gefunden. Der Eintrag wird dort ergänzt.")
-                    dict_his.append(
-                        {
-                            "Mtknr" : item['Matrikelnummer'],
-                            "Name" : item['Im Besitz von (Name)'],
-                            "Nachname" : item['Im Besitz von (Name)'].split(",", 1)[0],
-                            "Vorname" : item['Im Besitz von (Name)'].split(",", 1)[1] if "," in item['Im Besitz von (Name)'] else "",
-                            "Prüfungsgebiet" : item["Prüfungsgebiet"],
-                            "wunsch1" : pruefer_kurzname[item["Prüfer*in Priorität 1"]],
-                            "wunsch2" : pruefer_kurzname[item["Prüfer*in Priorität 2"]],
-                            "wunsch3" : pruefer_kurzname[item["Prüfer*in Priorität 3"]],
-                            "Bemerkung" : item["Bemerkung"]
-                        }
-                    )
+                    if ignore == False:
+                        dict_his.append(
+                            {
+                                "Mtknr" : item['Matrikelnummer'],
+                                "Name" : item['Im Besitz von (Name)'],
+                                "Nachname" : item['Im Besitz von (Name)'].split(",", 1)[0],
+                                "Vorname" : item['Im Besitz von (Name)'].split(",", 1)[1] if "," in item['Im Besitz von (Name)'] else "",
+                                "Prüfungsgebiet" : item["Prüfungsgebiet"],
+                                "wunsch1" : pruefer_kurzname[pr1] if pr1 != "" else "",
+                                "wunsch2" : pruefer_kurzname[pr2] if pr2 != "" else "",
+                                "wunsch3" : pruefer_kurzname[pr3] if pr3 != "" else "",
+                                "Bemerkung" : item["Bemerkung"]
+                            }
+                        )
     if st.session_state.xls_his and st.session_state.xls_ilias:
         dict_his = sorted(dict_his, key=lambda x: (x["Prüfungsgebiet"], x["Name"]))
         for item in dict_his:
@@ -262,7 +269,11 @@ if st.session_state.xls_his and st.session_state.xls_ilias:
             for i in range(len(df)):
                 for j in range(i + 1, len(df)):
                     if df.iloc[i]["Mtknr"] == df.iloc[j]["Mtknr"]:
-                        st.write(f"{df.iloc[i]['Nachname']}, {df.iloc[i]['Vorname']} ({df.iloc[i]['Mtknr']}) hat sich zu Prüfungen in {df.iloc[i]['Prüfungsgebiet']} und {df.iloc[j]['Prüfungsgebiet']} angemeldet. Prüfer sind **{df.iloc[i]['Prüfer']}** und **{df.iloc[j]['Prüfer']}**.")    
+                        text = f"{df.iloc[i]['Nachname']}, {df.iloc[i]['Vorname']} ({df.iloc[i]['Mtknr']}) hat sich zu Prüfungen in {df.iloc[i]['Prüfungsgebiet']} und {df.iloc[j]['Prüfungsgebiet']} angemeldet. Prüfer sind **{df.iloc[i]['Prüfer']}** und **{df.iloc[j]['Prüfer']}**."
+                        if df.iloc[i]['Prüfer'] == df.iloc[j]['Prüfer']:
+                            st.error(text)
+                        else:
+                            st.write(text)
             st.write("### Ergänzung der HisInOne-Liste  :")
             st.write(df)
             
