@@ -30,14 +30,13 @@ pruefer = sorted(pruefer, key=lambda x: (x['Nachname'], x['Vorname']))
 pruefer_kurzname = { f"{p['Vorname']} {p['Nachname']}" : p['Kurzname'] for p in pruefer}
 
 pruefungsnummern = [
-    {"Nummer":"07LE23PL-BSc21-P-Ana-müP","Studiengang":"BSc","Prüfungsgebiet":"Analysis I und II"},
-    {"Nummer":"07LE23PL-2HfB21-P-Ana-müP","Studiengang":"2HfB","Prüfungsgebiet":"Analysis I und II"},
-    {"Nummer":"07LE23PL-MEH21-P-Ana-müP","Studiengang":"MEd ErwHF","Prüfungsgebiet":"Analysis I und II"},
-    {"Nummer":"07LE23PL-MEB21-P-Ana-müP","Studiengang":"MEd ErwBF","Prüfungsgebiet":"Analysis I und II"},
-    {"Nummer":"07LE23PL-BSc12-P-LA-müP","Studiengang":"BSc","Prüfungsgebiet":"Lineare Algebra I und II"},
-    {"Nummer":"07LE23PL-BSc21-P-LA-müP","Studiengang":"BSc","Prüfungsgebiet":"Lineare Algebra I und II"},
-    {"Nummer":"07LE23PL-2HfB21-P-LA-müP","Studiengang":"2HfB","Prüfungsgebiet":"Lineare Algebra I und II"},
-    {"Nummer":"07LE23PL-MEH21-P-LA-müP","Studiengang":"MEd ErwHF","Prüfungsgebiet":"Lineare Algebra I und II"}
+    {"Nummer":"07LE23PL-müP-BSc21-P-Ana","Studiengang":"BSc","Prüfungsgebiet":"Analysis I und II"},
+    {"Nummer":"07LE23PL-müP-2HfB21-Ana","Studiengang":"2HfB","Prüfungsgebiet":"Analysis I und II"},
+    {"Nummer":"07LE23PL-müP-MEH21-Ana","Studiengang":"MEd ErwHF","Prüfungsgebiet":"Analysis I und II"},
+    {"Nummer":"07LE23PL-müP-MEB21-Ana","Studiengang":"MEd ErwBF","Prüfungsgebiet":"Analysis I und II"},
+    {"Nummer":"07LE23PL-müP-BSc21-P-LA","Studiengang":"BSc","Prüfungsgebiet":"Lineare Algebra I und II"},
+    {"Nummer":"07LE23PL-müP-2HfB21-LA","Studiengang":"2HfB","Prüfungsgebiet":"Lineare Algebra I und II"},
+    {"Nummer":"07LE23PL-müP-MEH21-LA","Studiengang":"MEd ErwHF","Prüfungsgebiet":"Lineare Algebra I und II"}
     ]
 
 #wunschspalten = [12, 13, 14]
